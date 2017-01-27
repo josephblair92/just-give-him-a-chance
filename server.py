@@ -3,6 +3,14 @@ from pymongo import MongoClient
 import os
 import datetime
 import json
+from bson import ObjectId
+
+class JSONEncoder(json.JSONEncoder):
+	def default(self, o):
+		if isinstance(o, ObjectId):
+			return str(o)
+		return json.JSONEncoder.default(self, o)
+
 
 def init_mongo():
 	
@@ -24,9 +32,9 @@ def root():
 
 @app.route('/actions')
 def get_actions():
-	data=list(db["actions"].find({}, {"_id":False}))
+	data=list(db["actions"].find({}))
 	print(data)
-	return Response(json.dumps(data), mimetype="application/json")
+	return Response(JSONEncoder().encode(data), mimetype="application/json")
 
 
 if __name__ == '__main__':
