@@ -36,6 +36,11 @@ def get_actions():
 	print(data)
 	return Response(JSONEncoder().encode(data), mimetype="application/json")
 
+@app.route('/categories')
+def get_categories():
+	data=list(db["categories"].find({}))
+	return Response(JSONEncoder().encode(data), mimetype="application/json")
+
 
 if __name__ == '__main__':
 	port = int(os.environ.get('PORT', 5000))
