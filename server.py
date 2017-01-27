@@ -33,7 +33,6 @@ def root():
 @app.route('/actions')
 def get_actions():
 	data=list(db["actions"].find({}))
-	print(data)
 	return Response(JSONEncoder().encode(data), mimetype="application/json")
 
 @app.route('/categories')
