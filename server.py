@@ -35,6 +35,12 @@ def get_actions():
 	data=list(db["actions"].find({}))
 	return Response(JSONEncoder().encode(data), mimetype="application/json")
 
+@app.route('/actions/<action_id>')
+def get_action(action_id):
+	action = db["actions"].find_one({"_id":ObjectId(action_id)})
+	action["_id"] = str(action["_id"])
+	return jsonify(action)
+
 @app.route('/categories')
 def get_categories():
 	data=list(db["categories"].find({}))
