@@ -32,8 +32,23 @@ def root():
 
 @app.route('/actions')
 def get_actions():
-	data=list(db["actions"].find({}))
+	filters=list()
+	#process each query param and add filter
+	if "categories" in request.args:
+		filters.append(get_categories_filter(request.args.getlist("categories")))
+	#put all filters into $and, or match all if filter list is empty
+	if len(filters) > 0:
+		query = {"$and": filters}
+	else:
+		query = {}
+	#execute query and return
+	data=list(db["actions"].find(query))
 	return Response(JSONEncoder().encode(data), mimetype="application/json")
+
+def get_categories_filter(categories):
+	#lowercase the list to avoid case sensitivity problems
+	categories = [x.lower() for x in categories]
+	return {"categories": {"$in": categories}}
 
 @app.route('/actions/<action_id>')
 def get_action(action_id):
